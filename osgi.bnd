@@ -1,0 +1,8 @@
+#-----------------------------------------------------------------
+# Use this file to add customized Bnd instructions for the bundle
+#-----------------------------------------------------------------
+
+Bundle-Activator: ${bundle.namespace}.Activator
+Import-Package: *;resolution:=optional,com.google.code.gson;resolution:=optional
+Bundle-Classpath: .
+

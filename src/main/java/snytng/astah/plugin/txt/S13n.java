@@ -8,6 +8,7 @@ import java.util.Map;
 
 import com.change_vision.jude.api.inf.exception.InvalidUsingException;
 import com.change_vision.jude.api.inf.model.IDiagram;
+import com.change_vision.jude.api.inf.presentation.ILinkPresentation;
 import com.change_vision.jude.api.inf.presentation.INodePresentation;
 import com.change_vision.jude.api.inf.presentation.IPresentation;
 
@@ -45,6 +46,16 @@ public class S13n
 				String  text  = node.getLabel();
 				if(text != null && ! text.isEmpty()) {
 					pMap.put(point, text);
+				}
+			}
+			else if(p instanceof ILinkPresentation) {
+				ILinkPresentation link = (ILinkPresentation)p;
+				String x = link.getProperty("name.point.x");
+				String y = link.getProperty("name.point.y");
+				String text = link.getLabel();
+				if(text != null & ! text.isEmpty()) {
+					Point2D point = new Point2D.Double(Double.parseDouble(x), Double.parseDouble(y));
+					pMap.put(point,  text);
 				}
 			}
 		}

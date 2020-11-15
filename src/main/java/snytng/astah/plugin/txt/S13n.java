@@ -17,7 +17,29 @@ public class S13n
 	public S13n() {
 	}
 
-	enum Direction {RIGHTWARD, DOWNWARD, LEFTWARD, UPWARD};
+	enum Direction {
+		RIGHTWARD(
+				Comparator.comparing(Point2D::getX)
+					.thenComparing(Point2D::getY)
+					),
+		DOWNWARD(
+				Comparator.comparing(Point2D::getY)
+					.thenComparing(Point2D::getX)
+					),
+		LEFTWARD(
+				Comparator.comparing(Point2D::getX, Comparator.reverseOrder())
+					.thenComparing(Point2D::getY, Comparator.reverseOrder())
+					),
+		UPWARD(
+				Comparator.comparing(Point2D::getY, Comparator.reverseOrder())
+					.thenComparing(Point2D::getX, Comparator.reverseOrder())
+					);
+
+		private final Comparator<Point2D> comparator;
+		private Direction(Comparator<Point2D> c){
+			this.comparator = c;
+		}
+	};
 
 	public static String getStrings(IDiagram diagram, Direction direction) {
 		System.out.println("## " + diagram.getName());
@@ -62,28 +84,7 @@ public class S13n
 
 		Point2D[] keys = pMap.keySet().toArray(new Point2D[pMap.keySet().size()]);
 
-		switch(direction) {
-		case RIGHTWARD:
-			Arrays.sort(keys, Comparator.comparing(Point2D::getX)
-					.thenComparing(Point2D::getY));
-			break;
-		case DOWNWARD:
-			Arrays.sort(keys, Comparator.comparing(Point2D::getY)
-					.thenComparing(Point2D::getX));
-			break;
-		case LEFTWARD:
-			Arrays.sort(keys, Comparator.comparing(
-					Point2D::getX, Comparator.reverseOrder())
-					.thenComparing(Point2D::getY, Comparator.reverseOrder()));
-			break;
-		case UPWARD:
-			Arrays.sort(keys, Comparator.comparing(
-					Point2D::getY, Comparator.reverseOrder())
-					.thenComparing(Point2D::getX, Comparator.reverseOrder()));
-			break;
-		default:
-			break;
-		}
+		Arrays.sort(keys, direction.comparator);
 
 		StringBuilder sb = new StringBuilder();
 		for(Point2D key : keys) {

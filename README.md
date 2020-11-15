@@ -5,7 +5,7 @@ astah*のモデルをテキスト表示するプラグインです。
 モデルの要素の文字列を転記したいときに便利なツールです。
 
 # ダウンロード
-- [ここ](https://github.com/snytng/txt/releases/download/V0.1/txt-0.1.jar)からダウンロードして下さい。
+- [ここ](https://github.com/snytng/txt/releases/latest)からtxt-<version>.jarダウンロードして下さい。
 
 # インストール
 - ダウンロードしたプラグインファイルをastah*アプリケーションにドラッグドロップするか、Program Files\asta-professionals\pluginsに置いて下さい。

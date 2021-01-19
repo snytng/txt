@@ -21,6 +21,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.ScrollPaneConstants;
 
 import com.change_vision.jude.api.inf.AstahAPI;
 import com.change_vision.jude.api.inf.exception.InvalidUsingException;
@@ -203,8 +204,8 @@ ProjectEventListener
 		textPanel.setLayout(new BoxLayout(textPanel, BoxLayout.Y_AXIS));
 		textPanelScroll = new JScrollPane(
 				textPanel,
-				JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+				ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS,
+				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		s13nTextArea = new JTextArea();
 		s13nTextArea.setEditable(false);
 		textPanel.add(s13nTextArea);

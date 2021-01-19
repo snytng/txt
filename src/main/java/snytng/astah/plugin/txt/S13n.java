@@ -1,9 +1,11 @@
 package snytng.astah.plugin.txt;
 
 import java.awt.geom.Point2D;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.change_vision.jude.api.inf.exception.InvalidUsingException;
@@ -15,6 +17,7 @@ import com.change_vision.jude.api.inf.presentation.IPresentation;
 public class S13n
 {
 	public S13n() {
+		// no action
 	}
 
 	enum Direction {
@@ -39,7 +42,7 @@ public class S13n
 		private Direction(Comparator<Point2D> c){
 			this.comparator = c;
 		}
-	};
+	}
 
 	public static String getStrings(IDiagram diagram, Direction direction) {
 		System.out.println("## " + diagram.getName());
@@ -54,12 +57,24 @@ public class S13n
 		return getStrings(ps, direction);
 	}
 
+
+	final private static List<String> supportedPresentations = new ArrayList<String>() {
+		{
+			add("Topic"); // マインドマップのトピック
+			//add("Frame"); // 図のフレーム
+		}
+	};
+
 	public static String getStrings(IPresentation[] ps, Direction direction) {
 		Map<Point2D, String> pMap = new HashMap<>();
 
 		for(IPresentation p : ps) {
-			if(p.getModel() == null) { // フレーム？
-				continue;
+			// Presentationにモデルがない、かつ、サポートするタイプ出ない場合にはスキップ
+			if(p.getModel() == null) {
+				System.out.println("Presentation has no model.type is " + p.getType());
+				if(!supportedPresentations.contains(p.getType())) {
+					continue;
+				}
 			}
 
 			if(p instanceof INodePresentation) {
@@ -75,7 +90,7 @@ public class S13n
 				String x = link.getProperty("name.point.x");
 				String y = link.getProperty("name.point.y");
 				String text = link.getLabel();
-				if(text != null & ! text.isEmpty()) {
+				if(text != null && ! text.isEmpty()) {
 					Point2D point = new Point2D.Double(Double.parseDouble(x), Double.parseDouble(y));
 					pMap.put(point,  text);
 				}

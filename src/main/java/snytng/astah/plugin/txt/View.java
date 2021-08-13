@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
@@ -20,6 +21,7 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSlider;
 import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
 
@@ -112,19 +114,9 @@ ProjectEventListener
 	JButton leftwardButton = null;
 	JButton upwardButton = null;
 	JButton lastSelectedButton = rightwardButton;
+	JSlider zoomSlider = null;
 
 	public Container createPane() {
-		copyAutomatically = new JCheckBox("クリップボードへコピー");
-		copyAutomatically.setSelected(false);
-		copyAutomatically.addActionListener(e -> {
-			if(copyAutomatically.isSelected()) {
-				logger.log(Level.INFO, "copyAutomatically selected");
-				copyTextToClipboard(s13nTextArea.getText());
-			} else {
-				logger.log(Level.INFO, "copyAutomatically unselected");
-			}
-		});
-
 		JPanel buttonsPanel = new JPanel();
 		buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.Y_AXIS));
 
@@ -208,11 +200,51 @@ ProjectEventListener
 				ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		s13nTextArea = new JTextArea();
 		s13nTextArea.setEditable(false);
+		s13nTextArea.addMouseWheelListener(e -> {
+			if(e.isControlDown()) {
+				int wr = e.getWheelRotation();
+				Font f = s13nTextArea.getFont();
+				int fs = f.getSize();
+				if(wr > 0) {
+					fs = Math.min(fs + wr, 100);
+				} else if(wr < 0) {
+					fs = Math.max(fs + wr, 10);
+				}
+				s13nTextArea.setFont(new Font(f.getName(), f.getStyle(), fs));
+			}
+		});
 		textPanel.add(s13nTextArea);
+
+		JPanel menuPanel = new JPanel();
+		menuPanel.setLayout(new BorderLayout());
+
+		copyAutomatically = new JCheckBox("クリップボードへコピー");
+		copyAutomatically.setSelected(false);
+		copyAutomatically.addActionListener(e -> {
+			if(copyAutomatically.isSelected()) {
+				logger.log(Level.INFO, "copyAutomatically selected");
+				copyTextToClipboard(s13nTextArea.getText());
+			} else {
+				logger.log(Level.INFO, "copyAutomatically unselected");
+			}
+		});
+
+		zoomSlider = new JSlider(10, 100, 12);
+		zoomSlider.setMajorTickSpacing(10);
+		zoomSlider.setPaintTicks(true);
+		zoomSlider.setSnapToTicks(true);
+		zoomSlider.addChangeListener(e -> {
+			int fs = zoomSlider.getValue();
+			Font f = s13nTextArea.getFont();
+			s13nTextArea.setFont(new Font(f.getName(), f.getStyle(), fs));
+		});
+
+		menuPanel.add(copyAutomatically, BorderLayout.WEST);
+		menuPanel.add(zoomSlider, BorderLayout.EAST);
 
 		JPanel topPanel = new JPanel();
 		topPanel.setLayout(new BorderLayout());
-		topPanel.add(copyAutomatically, BorderLayout.NORTH);
+		topPanel.add(menuPanel, BorderLayout.NORTH);
 		topPanel.add(buttonsPanel, BorderLayout.EAST);
 		topPanel.add(textPanelScroll, BorderLayout.CENTER);
 
@@ -264,6 +296,7 @@ ProjectEventListener
 	 */
 	@Override
 	public void diagramSelectionChanged(IDiagramEditorSelectionEvent e) {
+		logger.log(Level.INFO, "diagramSelectionChanged");
 		updateDiagramView();
 	}
 
@@ -272,6 +305,7 @@ ProjectEventListener
 	 */
 	@Override
 	public void entitySelectionChanged(IEntitySelectionEvent e) {
+		logger.log(Level.INFO, "entitySelectionChanged");
 		updateDiagramView();
 	}
 
@@ -282,6 +316,7 @@ ProjectEventListener
 	 */
 	@Override
 	public void projectChanged(ProjectEvent e) {
+		logger.log(Level.INFO, "projectChanged");
 		updateDiagramView();
 	}
 
